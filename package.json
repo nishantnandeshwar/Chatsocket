@@ -1,0 +1,27 @@
+{
+  "name": "chatsocketio",
+  "version": "1.0.0",
+  "description": "Real time chat app using socket.io",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start" : "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/nishantnandeshwar/Chatsocketio.git"
+  },
+  "keywords": [
+    "chat",
+    "socket"
+  ],
+  "author": "Nishant Nandeshwar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nishantnandeshwar/Chatsocketio/issues"
+  },
+  "homepage": "https://github.com/nishantnandeshwar/Chatsocketio#readme",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
