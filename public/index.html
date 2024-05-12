@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Socket.IO chat</title>
     <style>
@@ -7,6 +8,7 @@
             margin: 0;
             padding-bottom: 3rem;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #333;
         }
 
         #form {
@@ -60,53 +62,62 @@
 
         .sender-left {
             text-align: left;
+            color: #efefef;
         }
 
         .sender-right {
             text-align: right;
+            color: #efefef;
         }
     </style>
 </head>
 
 <body>
+    <div class="container">
+    </div>
     <ul id="messages"></ul>
-    <ul id="clientId"></ul>
+    <ul id="sender-left"></ul>
+    <ul id="sender-right"></ul>
     <form id="form" action="">
-        <input id="input" autocomplete="off" /><button>Send</button>
+        <input id="input" autocomplete="off" />
+        <button>Send</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
     <script>
+        const name = prompt('What is your name?')
+
         var socket = io();
         var messages = document.getElementById('messages');
         var form = document.getElementById('form');
         var input = document.getElementById('input');
 
-        // var clientId;
+        const messageContainer = document.querySelector(".container")
+        const append = (message, position) => {
+            const messageElement = document.createElement('div');
+            messageElement.innerText = message;
+            messageElement.classList.add(position)
+            messageContainer.append(messageElement)
+        }
 
         form.addEventListener('submit', function (e) {
             e.preventDefault();
             if (input.value) {
-                socket.emit('chat message', input.value); // send the message
+                append(`You: ${input.value}`,'sender-left')
+                socket.emit('send', input.value); // send the message
                 input.value = '';
             }
         });
 
-        socket.on('chat message', function (msg, id) {
-            var item = document.createElement('li');
-            var msg = msg;
-            var skId = id;
-            item.textContent = JSON.stringify({ m: msg, sid: skId })
-            messages.appendChild(item);
-            window.scrollTo(0, document.body.scrollHeight);
+        socket.on('receive', function (receiveData) {
+            console.log('Received browser data:', receiveData);
+            append(`${receiveData.name}: ${receiveData.message}`,'sender-right')
         });
 
-        socket.on('browserId', function (browserId) {
-            console.log('Received browser ID:', browserId);
-
-            // Now you can use the browserId as needed in your client-side code
-            // For example, you can store it in a variable for later use
-            var currentBrowserId = browserId;
-        });
+        socket.emit('new-user-joined', name)  //send the name to index.js
+        socket.on('user-joined', name=>{   // index.js is pass that name
+            console.log("name joined>>", name)
+            append(`${name} is Joined the chat app..`,'sender-right')
+        })
 
     </script>
 </body>
